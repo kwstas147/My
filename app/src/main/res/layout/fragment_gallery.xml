@@ -5,26 +5,51 @@
     android:layout_height="match_parent"
     tools:context=".ui.gallery.GalleryFragment">
 
-    <!-- Πεδίο για φίλτρα αναζήτησης -->
+    <!-- Search filter input -->
     <EditText
         android:id="@+id/filterInput"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:hint="Αναζήτηση (ημέρα, μήνας, έτος)"
+        android:autofillHints=""
+        android:hint="@string/search_day_month_year"
+        android:inputType="text|number"
+        android:maxWidth="300dp"
         android:minHeight="48dp"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- RecyclerView για τις καταγραφές -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/logEntriesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <!-- Add Log Entry Button -->
+    <Button
+        android:id="@+id/addLogEntryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_log_entry"
+        app:layout_constraintTop_toBottomOf="@id/filterInput"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Delete by Field Name Button -->
+    <Button
+        android:id="@+id/deleteByFieldNameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_by_field_name"
+        app:layout_constraintTop_toBottomOf="@id/addLogEntryButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- RecyclerView for log entries -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/recycler_view_description"
+        app:layout_constraintTop_toBottomOf="@id/deleteByFieldNameButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,4 +38,7 @@
     <string name="amount">Amount</string>
     <string name="old_balance">Old Balance</string>
     <string name="comment">Comment</string>
+    <string name="add_log_entry">Add Log Entry</string>
+    <string name="delete_by_field_name">Delete by Field Name</string>
+    <string name="search_day_month_year">Search (day, month, year)</string>
 </resources>

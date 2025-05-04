@@ -2,6 +2,8 @@ package com.example.myerp.ui.gallery
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -15,41 +17,46 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myerp.R
 import com.example.myerp.databinding.FragmentGalleryBinding
 import com.example.myerp.data.LogEntry
-import com.example.myerp.ui.adapters.LogEntryAdapter
+import com.example.myerp.data.LogEntryAdapter
 
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var galleryViewModel: GalleryViewModel
-    private lateinit var logEntryAdapter: LogEntryAdapter
+    private lateinit var adapter: LogEntryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        galleryViewModel = ViewModelProvider(this)[GalleryViewModel::class.java]
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
-        galleryViewModel = ViewModelProvider(
-            this,
-            GalleryViewModelFactory(requireActivity().application)
-        )[GalleryViewModel::class.java]
-        return binding.root
+        val root: View = binding.root
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        adapter = LogEntryAdapter(galleryViewModel)
+        binding.recyclerView.adapter = adapter
+
+        galleryViewModel.logEntries.observe(viewLifecycleOwner) { logEntries ->
+            adapter.submitList(logEntries)
+        }
+        galleryViewModel.loadLogEntries()
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Κλήση για φόρτωση δεδομένων
+        // Load log entries
         galleryViewModel.loadLogEntries()
 
         // Initialize RecyclerView
         setupRecyclerView()
 
         // Observe log entries
-        galleryViewModel.logEntries.observe(viewLifecycleOwner) { logEntries ->
-            logEntryAdapter.submitList(logEntries)
+        galleryViewModel.logEntries.observe(viewLifecycleOwner) { logEntries: List<LogEntry> ->
+            adapter.submitList(logEntries)
         }
 
         // Add MenuProvider for the menu
@@ -69,13 +76,47 @@ class GalleryFragment : Fragment() {
                 }
             }
         }, viewLifecycleOwner)
+
+        // Add button listeners
+        setupButtons()
     }
 
     private fun setupRecyclerView() {
-        logEntryAdapter = LogEntryAdapter()
-        binding.logEntriesRecyclerView.apply {
+        adapter = LogEntryAdapter(galleryViewModel) // Pass the ViewModel instance
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = logEntryAdapter
+            adapter = adapter
+        }
+    }
+
+    private fun setupButtons() {
+        // Add a new log entry
+        binding.addLogEntryButton.setOnClickListener {
+            val newEntry = LogEntry(
+                fieldName = "Sample Field",
+                amount = 100.0,
+                oldBalance = 500.0,
+                newBalance = 600.0,
+                comment = "Sample Comment",
+                timestamp = System.currentTimeMillis() // Add timestamp
+            )
+            galleryViewModel.addLogEntry(newEntry)
+        }
+
+        // Filter log entries
+        binding.filterInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                galleryViewModel.filterLogEntries(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Delete log entries by field name
+        binding.deleteByFieldNameButton.setOnClickListener {
+            galleryViewModel.deleteLogEntriesByFieldName("Sample Field")
         }
     }
 
