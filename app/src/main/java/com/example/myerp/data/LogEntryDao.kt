@@ -6,7 +6,7 @@ import androidx.room.*
 @Dao
 interface LogEntryDao {
     @Query("SELECT * FROM log_entries ORDER BY timestamp DESC")
-    fun getAllLogEntries(): LiveData<List<LogEntry>>
+    suspend fun getAllLogEntriesList(): List<LogEntry>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLogEntry(logEntry: LogEntry)

@@ -22,7 +22,7 @@ class GalleryViewModel(application: Application) : ViewModel() {
     fun loadLogEntries() {
         viewModelScope.launch {
             val entries = withContext(Dispatchers.IO) {
-                logEntryDao.getAllLogEntries()
+                logEntryDao.getAllLogEntriesList()
             }
             _logEntries.postValue(entries)
         }
@@ -30,10 +30,14 @@ class GalleryViewModel(application: Application) : ViewModel() {
 
     fun filterLogEntries(filterText: String) {
         viewModelScope.launch {
-            val entries = withContext(Dispatchers.IO) {
-                logEntryDao.getLogEntriesByFieldName(filterText)
+            withContext(Dispatchers.IO) {
+                val liveDataEntries = logEntryDao.getLogEntriesByFieldName(filterText)
+                withContext(Dispatchers.Main) {
+                    liveDataEntries.observeForever { entries ->
+                        _logEntries.value = entries
+                    }
+                }
             }
-            _logEntries.postValue(entries)
         }
     }
 
