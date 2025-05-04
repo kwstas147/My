@@ -18,6 +18,9 @@
     <string name="recycler_view_description">List of items</string>
 
     <!-- Additional strings -->
+    <string name="remove_button_text">Remove</string>
+    <string name="error_fill_all_fields">Please fill in all fields.</string>
+    <string name="error_invalid_credentials">Invalid username or password.</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="username_hint">Enter your username</string>

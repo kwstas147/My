@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.myerp.MainActivity
+import com.example.myerp.R
 import com.example.myerp.data.AppDatabase
 import com.example.myerp.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.passwordInput.text.toString()
 
             if (username.isEmpty() || password.isEmpty()) {
-                binding.errorText.text = "Please fill in all fields"
+                binding.errorText.text = getString(R.string.error_fill_all_fields)
                 return@setOnClickListener
             }
 
@@ -51,10 +52,10 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                         finish()
                     } else {
-                        binding.errorText.text = "Invalid username or password"
+                        binding.errorText.text = getString(R.string.error_invalid_credentials)
                     }
                 } else {
-                    binding.errorText.text = "Invalid username or password"
+                    binding.errorText.text = getString(R.string.error_invalid_credentials)
                 }
             }
         }
@@ -71,5 +72,3 @@ private fun hashPassword(password: String, salt: String): String {
     val hash = digest.digest((password + salt).toByteArray())
     return hash.joinToString("") { "%02x".format(it) }
 }
-
-
