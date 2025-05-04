@@ -18,6 +18,8 @@
     <string name="recycler_view_description">List of items</string>
 
     <!-- Additional strings -->
+
+    <string name="new_balance">New Balance</string>
     <string name="remove_button_text">Remove</string>
     <string name="error_fill_all_fields">Please fill in all fields.</string>
     <string name="error_invalid_credentials">Invalid username or password.</string>
@@ -32,4 +34,8 @@
     <string name="register_success">Registration successful</string>
     <string name="register_error">Registration failed</string>
     <string name="field_total">Υπόλοιπο: %d</string>
+    <string name="share">Share</string>
+    <string name="amount">Amount</string>
+    <string name="old_balance">Old Balance</string>
+    <string name="comment">Comment</string>
 </resources>
