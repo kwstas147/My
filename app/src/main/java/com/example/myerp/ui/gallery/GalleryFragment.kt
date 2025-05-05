@@ -12,18 +12,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myerp.R
+import com.example.myerp.data.AppDatabase
 import com.example.myerp.databinding.FragmentGalleryBinding
 import com.example.myerp.data.LogEntry
 import com.example.myerp.data.LogEntryAdapter
+import com.example.myerp.data.FieldData
+import com.example.myerp.data.FieldDao
 
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
     private val binding get() = _binding!!
-    private lateinit var galleryViewModel: GalleryViewModel
+    private val galleryViewModel: GalleryViewModel by viewModels {
+        val database = AppDatabase.getDatabase(requireContext())
+        GalleryViewModel.provideFactory(database.logEntryDao(), database.fieldDao())
+    }
     private lateinit var adapter: LogEntryAdapter
 
     override fun onCreateView(
@@ -31,32 +37,35 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        galleryViewModel = ViewModelProvider(this)[GalleryViewModel::class.java]
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter = LogEntryAdapter(galleryViewModel)
-        binding.recyclerView.adapter = adapter
 
-        galleryViewModel.logEntries.observe(viewLifecycleOwner) { logEntries ->
-            adapter.submitList(logEntries)
-        }
+        // Initialize RecyclerView
+        setupRecyclerView()
+
+        // Load log entries and fields
         galleryViewModel.loadLogEntries()
+        galleryViewModel.loadFields()
+
         return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Load log entries
-        galleryViewModel.loadLogEntries()
-
-        // Initialize RecyclerView
-        setupRecyclerView()
-
         // Observe log entries
-        galleryViewModel.logEntries.observe(viewLifecycleOwner) { logEntries: List<LogEntry> ->
+        galleryViewModel.logEntries.observe(viewLifecycleOwner) { logEntries ->
+            println("Observed log entries: $logEntries") // Debugging line
+            if (logEntries.isEmpty()) {
+                println("No log entries to display in the gallery.") // Debugging line
+            }
             adapter.submitList(logEntries)
+        }
+
+        // Observe fields
+        galleryViewModel.fields.observe(viewLifecycleOwner) { fields ->
+            println("Observed fields: $fields") // Debugging line
+            // Handle fields display logic here if needed
         }
 
         // Add MenuProvider for the menu
@@ -69,6 +78,9 @@ class GalleryFragment : Fragment() {
                 return when (menuItem.itemId) {
                     R.id.action_share -> {
                         val logEntries = galleryViewModel.logEntries.value.orEmpty()
+                        if (logEntries.isEmpty()) {
+                            println("No log entries to share.") // Debugging line
+                        }
                         shareLogEntries(logEntries)
                         true
                     }
@@ -82,10 +94,10 @@ class GalleryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = LogEntryAdapter(galleryViewModel) // Pass the ViewModel instance
+        adapter = LogEntryAdapter(galleryViewModel) // Περνάμε το galleryViewModel στον adapter
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = adapter
+            adapter = this@GalleryFragment.adapter
         }
     }
 
@@ -105,13 +117,17 @@ class GalleryFragment : Fragment() {
 
         // Filter log entries
         binding.filterInput.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // No action needed
+            }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 galleryViewModel.filterLogEntries(s.toString())
             }
 
-            override fun afterTextChanged(s: Editable?) {}
+            override fun afterTextChanged(s: Editable?) {
+                // No action needed
+            }
         })
 
         // Delete log entries by field name

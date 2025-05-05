@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import com.example.myerp.R
 import com.example.myerp.ui.gallery.GalleryViewModel
@@ -19,10 +20,13 @@ class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
         val oldBalanceTextView: TextView = itemView.findViewById(R.id.oldBalanceTextView)
         val newBalanceTextView: TextView = itemView.findViewById(R.id.newBalanceTextView)
         val commentTextView: TextView = itemView.findViewById(R.id.commentTextView)
+        val timestampTextView: TextView = itemView.findViewById(R.id.timestampTextView) // Add this
+        val deleteButton: Button = itemView.findViewById(R.id.deleteButton) // Add this
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogEntryViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_log_entry, parent, false)
+        val itemView =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_log_entry, parent, false)
         return LogEntryViewHolder(itemView)
     }
 
@@ -32,17 +36,21 @@ class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
         holder.amountTextView.text = currentEntry.amount.toString()
         holder.oldBalanceTextView.text = currentEntry.oldBalance.toString()
         holder.newBalanceTextView.text = currentEntry.newBalance.toString()
-        holder.commentTextView.text = currentEntry.comment
-    }
-}
-
-
-class LogEntryDiffCallback : DiffUtil.ItemCallback<LogEntry>() {
-    override fun areItemsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
-        return oldItem.timestamp == newItem.timestamp
+        //holder.commentTextView.text = currentEntry.comment
+        holder.timestampTextView.text = currentEntry.timestamp.toString() // Bind timestamp
+        holder.deleteButton.setOnClickListener {
+            galleryViewModel.deleteLogEntry(currentEntry) // Handle delete action
+        }
     }
 
-    override fun areContentsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
-        return oldItem == newItem
+
+    class LogEntryDiffCallback : DiffUtil.ItemCallback<LogEntry>() {
+        override fun areItemsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
+            return oldItem.timestamp == newItem.timestamp
+        }
+
+        override fun areContentsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
+            return oldItem == newItem
+        }
     }
 }

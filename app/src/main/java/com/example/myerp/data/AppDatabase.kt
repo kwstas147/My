@@ -20,7 +20,14 @@ abstract class AppDatabase : RoomDatabase() {
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `log_entries` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `fieldName` TEXT NOT NULL, `amount` REAL NOT NULL, `oldBalance` REAL NOT NULL, `newBalance` REAL NOT NULL, `comment` TEXT, `timestamp` INTEGER NOT NULL)"
+                    "CREATE TABLE IF NOT EXISTS `log_entries` (" +
+                            "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                            "`fieldName` TEXT NOT NULL, " +
+                            "`amount` REAL NOT NULL, " +
+                            "`oldBalance` REAL NOT NULL, " +
+                            "`newBalance` REAL NOT NULL, " +
+                            "`comment` TEXT, " +
+                            "`timestamp` INTEGER NOT NULL)"
                 )
             }
         }

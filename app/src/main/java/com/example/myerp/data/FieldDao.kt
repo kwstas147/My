@@ -5,6 +5,10 @@ import androidx.room.*
 
 @Dao
 interface FieldDao {
+
+    @Query("SELECT * FROM fields ORDER BY name ASC")
+    suspend fun getAllFieldsList(): List<FieldData>
+
     @Query("SELECT * FROM fields")
     fun getAllFields(): LiveData<List<FieldData>>
 

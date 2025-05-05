@@ -21,7 +21,7 @@ interface LogEntryDao {
     fun getLogEntriesByDateRange(startDate: Long, endDate: Long): LiveData<List<LogEntry>>
 
     @Query("SELECT * FROM log_entries WHERE fieldName LIKE :fieldName ORDER BY timestamp DESC")
-    fun getLogEntriesByFieldName(fieldName: String): LiveData<List<LogEntry>>
+    suspend fun getFilteredLogEntries(fieldName: String): List<LogEntry>
 
     @Query("SELECT * FROM log_entries WHERE amount BETWEEN :minAmount AND :maxAmount ORDER BY timestamp DESC")
     fun getLogEntriesByAmountRange(minAmount: Double, maxAmount: Double): LiveData<List<LogEntry>>

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.myerp.data.AppDatabase
 import com.example.myerp.data.FieldData
+import com.example.myerp.data.LogEntry
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,7 +29,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun adjustFieldValue(field: FieldData, value: Double) {
         viewModelScope.launch {
             val updatedField = field.copy(total = field.total + value)
-            fieldDao.insertField(updatedField) // Replace the existing field with the updated one
+            fieldDao.insertField(updatedField) // Ενημέρωση του πεδίου
+
+            // Δημιουργία και αποθήκευση LogEntry
+            val logEntry = LogEntry(
+                fieldName = field.name,
+                amount = value,
+                oldBalance = field.total,
+                newBalance = updatedField.total,
+                comment = "Adjustment made",
+                timestamp = System.currentTimeMillis()
+            )
+            println("Saving log entry: $logEntry") // Debugging line
+            AppDatabase.getDatabase(getApplication()).logEntryDao().insertLogEntry(logEntry)
         }
     }
 }

@@ -8,15 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.myerp.R
 import com.example.myerp.data.LogEntry
 
-class LogAdapter(private val logEntries: List<LogEntry>) :
-    RecyclerView.Adapter<LogAdapter.LogViewHolder>() {
+class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) : RecyclerView.Adapter<LogEntryAdapter.LogViewHolder>() {
+
+    private val logEntries = mutableListOf<LogEntry>()
 
     class LogViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val fieldName: TextView = itemView.findViewById(R.id.fieldName)
-        val amount: TextView = itemView.findViewById(R.id.amount)
-        val oldBalance: TextView = itemView.findViewById(R.id.oldBalance)
-        val newBalance: TextView = itemView.findViewById(R.id.newBalance)
-        val comment: TextView = itemView.findViewById(R.id.comment)
+        val fieldName: TextView = itemView.findViewById(R.id.fieldNameTextView)
+        val amount: TextView = itemView.findViewById(R.id.amountTextView)
+        val oldBalance: TextView = itemView.findViewById(R.id.oldBalanceTextView)
+        val newBalance: TextView = itemView.findViewById(R.id.newBalanceTextView)
+        val comment: TextView = itemView.findViewById(R.id.commentTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogViewHolder {
@@ -35,4 +36,10 @@ class LogAdapter(private val logEntries: List<LogEntry>) :
     }
 
     override fun getItemCount(): Int = logEntries.size
+
+    fun submitList(newEntries: List<LogEntry>) {
+        logEntries.clear()
+        logEntries.addAll(newEntries)
+        notifyDataSetChanged()
+    }
 }
