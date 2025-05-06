@@ -19,6 +19,7 @@ import com.example.myerp.data.AppDatabase
 import com.example.myerp.databinding.FragmentGalleryBinding
 import com.example.myerp.data.LogEntry
 import com.example.myerp.data.LogEntryAdapter
+
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null

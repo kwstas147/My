@@ -10,6 +10,9 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.myerp.R
 import com.example.myerp.ui.gallery.GalleryViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
 
 class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
     ListAdapter<LogEntry, LogEntryAdapter.LogEntryViewHolder>(LogEntryDiffCallback()) {
@@ -36,8 +39,13 @@ class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
         holder.amountTextView.text = currentEntry.amount.toString()
         holder.oldBalanceTextView.text = currentEntry.oldBalance.toString()
         holder.newBalanceTextView.text = currentEntry.newBalance.toString()
-        //holder.commentTextView.text = currentEntry.comment
-        holder.timestampTextView.text = currentEntry.timestamp.toString() // Bind timestamp
+        holder.commentTextView.text = currentEntry.comment.ifEmpty { "" }
+
+        // Format the timestamp into a readable date
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        val formattedDate = dateFormat.format(Date(currentEntry.timestamp))
+        holder.timestampTextView.text = formattedDate // Display formatted date
+
         holder.deleteButton.setOnClickListener {
             galleryViewModel.deleteLogEntry(currentEntry) // Handle delete action
         }

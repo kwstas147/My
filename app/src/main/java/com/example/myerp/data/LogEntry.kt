@@ -22,7 +22,7 @@ data class LogEntry(
     val newBalance: Double,
 
     @ColumnInfo(name = "comment")
-    val comment: String,
+    val comment: String = "", // Default to empty string
 
     @ColumnInfo(name = "timestamp")
     val timestamp: Long
