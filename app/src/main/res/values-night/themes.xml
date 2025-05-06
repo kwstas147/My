@@ -34,6 +34,7 @@
 
     <style name="Theme.MyErp.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark">
         <item name="android:textColor">@color/on_background_dark</item> <!-- Ensure text is visible -->
+        <item name="android:background">@color/background_dark</item> <!-- Match background -->
     </style>
 
 </resources>

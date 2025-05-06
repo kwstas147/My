@@ -6,6 +6,7 @@
     <string name="nav_header_subtitle">kwstas147@gmail.com</string>
     <string name="nav_header_desc">Navigation</string>
     <string name="action_settings">Settings</string>
+    <string name="fab_email">Send Email</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Πρωτόκολλο</string>
