@@ -16,7 +16,7 @@ class GalleryViewModel(
     private val _logEntries = MutableLiveData<List<LogEntry>>()
     val logEntries: LiveData<List<LogEntry>> get() = _logEntries
 
-    private val _fields = MutableLiveData<List<String>>()
+    private val _fields = MutableLiveData<List<String>>() // Example for fields
     val fields: LiveData<List<String>> get() = _fields
 
     fun loadLogEntries() {
@@ -46,6 +46,18 @@ class GalleryViewModel(
             loadLogEntries()
         }
     }
+
+
+    fun updateLogEntryComment(logEntry: LogEntry, comment: String) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val updatedEntry = logEntry.copy(comment = comment)
+                logEntryDao.insertLogEntry(updatedEntry) // Update the entry in the database
+            }
+            loadLogEntries() // Refresh the list
+        }
+    }
+
 
     fun deleteLogEntry(logEntry: LogEntry) {
         viewModelScope.launch {

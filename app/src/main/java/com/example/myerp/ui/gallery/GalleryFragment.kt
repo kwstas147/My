@@ -1,5 +1,6 @@
 package com.example.myerp.ui.gallery
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -10,6 +11,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -92,7 +94,9 @@ class GalleryFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = LogEntryAdapter(galleryViewModel) // Περνάμε το galleryViewModel στον adapter
+        adapter = LogEntryAdapter(galleryViewModel) { logEntry ->
+            showCommentDialog(logEntry) // Handle comment button click
+        }
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = this@GalleryFragment.adapter
@@ -114,6 +118,23 @@ class GalleryFragment : Fragment() {
                 // No action needed
             }
         })
+    }
+
+    private fun showCommentDialog(logEntry: LogEntry) {
+        val editText = EditText(requireContext())
+        editText.hint = "Enter your comment"
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Add Comment")
+            .setView(editText)
+            .setPositiveButton("Save") { _, _ ->
+                val comment = editText.text.toString()
+                if (comment.isNotBlank()) {
+                    galleryViewModel.updateLogEntryComment(logEntry, comment)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun shareLogEntries(logEntries: List<LogEntry>) {

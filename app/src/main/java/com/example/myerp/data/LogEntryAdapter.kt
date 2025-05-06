@@ -13,9 +13,14 @@ import com.example.myerp.ui.gallery.GalleryViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Date
+import kotlin.sequences.ifEmpty
+import kotlin.text.format
+import kotlin.toString
 
-class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
-    ListAdapter<LogEntry, LogEntryAdapter.LogEntryViewHolder>(LogEntryDiffCallback()) {
+class LogEntryAdapter(
+    private val galleryViewModel: GalleryViewModel,
+    private val onCommentClick: (LogEntry) -> Unit // Callback for comment action
+) : ListAdapter<LogEntry, LogEntryAdapter.LogEntryViewHolder>(LogEntryDiffCallback()) {
 
     class LogEntryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val fieldNameTextView: TextView = itemView.findViewById(R.id.fieldNameTextView)
@@ -23,8 +28,9 @@ class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
         val oldBalanceTextView: TextView = itemView.findViewById(R.id.oldBalanceTextView)
         val newBalanceTextView: TextView = itemView.findViewById(R.id.newBalanceTextView)
         val commentTextView: TextView = itemView.findViewById(R.id.commentTextView)
-        val timestampTextView: TextView = itemView.findViewById(R.id.timestampTextView) // Add this
-        val deleteButton: Button = itemView.findViewById(R.id.deleteButton) // Add this
+        val timestampTextView: TextView = itemView.findViewById(R.id.timestampTextView)
+        val deleteButton: Button = itemView.findViewById(R.id.deleteButton)
+        val commentButton: Button = itemView.findViewById(R.id.commentButton) // Add comment button
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogEntryViewHolder {
@@ -39,26 +45,19 @@ class LogEntryAdapter(private val galleryViewModel: GalleryViewModel) :
         holder.amountTextView.text = currentEntry.amount.toString()
         holder.oldBalanceTextView.text = currentEntry.oldBalance.toString()
         holder.newBalanceTextView.text = currentEntry.newBalance.toString()
-        holder.commentTextView.text = currentEntry.comment.ifEmpty { "" }
+        holder.commentTextView.text = currentEntry.comment.ifEmpty { "No comment" }
 
         // Format the timestamp into a readable date
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val formattedDate = dateFormat.format(Date(currentEntry.timestamp))
-        holder.timestampTextView.text = formattedDate // Display formatted date
+        holder.timestampTextView.text = formattedDate
 
         holder.deleteButton.setOnClickListener {
-            galleryViewModel.deleteLogEntry(currentEntry) // Handle delete action
-        }
-    }
-
-
-    class LogEntryDiffCallback : DiffUtil.ItemCallback<LogEntry>() {
-        override fun areItemsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
-            return oldItem.timestamp == newItem.timestamp
+            galleryViewModel.deleteLogEntry(currentEntry)
         }
 
-        override fun areContentsTheSame(oldItem: LogEntry, newItem: LogEntry): Boolean {
-            return oldItem == newItem
+        holder.commentButton.setOnClickListener {
+            onCommentClick(currentEntry) // Trigger the comment action
         }
     }
 }
