@@ -1,5 +1,6 @@
 package com.example.myerp.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -44,12 +45,18 @@ class RegisterActivity : AppCompatActivity() {
                 try {
                     userDao.registerUser(User(username, "$hashedPassword:$salt"))
                     showToast("Registration successful")
-                    finish()
+                    navigateToLogin() // Navigate to login screen
                 } catch (e: Exception) {
                     showToast("Registration failed: ${e.message}")
                 }
             }
         }
+    }
+
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // Close the current activity
     }
 
     private fun generateSalt(): String {

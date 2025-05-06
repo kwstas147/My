@@ -13,7 +13,6 @@
         <item name="colorOnSecondary">@color/on_secondary</item>
         <!-- Background color. -->
         <item name="android:colorBackground">@color/background</item> <!-- Light mode background -->
-        <item name="android:colorBackground">@color/background</item> <!-- Define colorBackground -->
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/on_surface</item>
         <item name="colorOnBackground">@color/on_background</item> <!-- Text color for light background -->
