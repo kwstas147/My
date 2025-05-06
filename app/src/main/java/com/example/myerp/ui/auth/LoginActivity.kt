@@ -2,7 +2,11 @@ package com.example.myerp.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.myerp.MainActivity
 import com.example.myerp.R
@@ -11,7 +15,7 @@ import com.example.myerp.databinding.ActivityLoginBinding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.security.MessageDigest
-
+import java.util.concurrent.Executor
 
 class LoginActivity : AppCompatActivity() {
 
@@ -33,6 +37,13 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Check for biometric support
+        val biometricManager = BiometricManager.from(this)
+        if (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS) {
+            binding.biometricButton.visibility = View.VISIBLE
+            setupBiometricPrompt()
+        }
 
         binding.loginButton.setOnClickListener {
             val username = binding.usernameInput.text.toString().trim()
@@ -60,9 +71,40 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-
         binding.registerLink.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
+        }
+    }
+
+    private fun setupBiometricPrompt() {
+        val executor: Executor = ContextCompat.getMainExecutor(this)
+        val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                super.onAuthenticationSucceeded(result)
+                // Navigate to MainActivity on successful authentication
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
+            }
+
+            override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {
+                super.onAuthenticationError(errorCode, errString)
+                binding.errorText.text = getString(R.string.error_biometric_auth_failed)
+            }
+
+            override fun onAuthenticationFailed() {
+                super.onAuthenticationFailed()
+                binding.errorText.text = getString(R.string.error_biometric_auth_failed)
+            }
+        })
+
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle(getString(R.string.biometric_prompt_title))
+            .setSubtitle(getString(R.string.biometric_prompt_subtitle))
+            .setNegativeButtonText(getString(R.string.biometric_prompt_cancel))
+            .build()
+
+        binding.biometricButton.setOnClickListener {
+            biometricPrompt.authenticate(promptInfo)
         }
     }
 }
