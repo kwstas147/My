@@ -19,9 +19,6 @@ import com.example.myerp.data.AppDatabase
 import com.example.myerp.databinding.FragmentGalleryBinding
 import com.example.myerp.data.LogEntry
 import com.example.myerp.data.LogEntryAdapter
-import com.example.myerp.data.FieldData
-import com.example.myerp.data.FieldDao
-
 class GalleryFragment : Fragment() {
 
     private var _binding: FragmentGalleryBinding? = null
@@ -102,19 +99,6 @@ class GalleryFragment : Fragment() {
     }
 
     private fun setupButtons() {
-        // Add a new log entry
-        binding.addLogEntryButton.setOnClickListener {
-            val newEntry = LogEntry(
-                fieldName = "Sample Field",
-                amount = 100.0,
-                oldBalance = 500.0,
-                newBalance = 600.0,
-                comment = "Sample Comment",
-                timestamp = System.currentTimeMillis() // Add timestamp
-            )
-            galleryViewModel.addLogEntry(newEntry)
-        }
-
         // Filter log entries
         binding.filterInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -129,11 +113,6 @@ class GalleryFragment : Fragment() {
                 // No action needed
             }
         })
-
-        // Delete log entries by field name
-        binding.deleteByFieldNameButton.setOnClickListener {
-            galleryViewModel.deleteLogEntriesByFieldName("Sample Field")
-        }
     }
 
     private fun shareLogEntries(logEntries: List<LogEntry>) {
