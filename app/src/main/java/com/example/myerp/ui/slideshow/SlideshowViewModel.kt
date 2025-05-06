@@ -1,23 +1,32 @@
 package com.example.myerp.ui.slideshow
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.myerp.data.CommentDao
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-class SlideshowViewModel : ViewModel() {
+class SlideshowViewModel(private val commentDao: CommentDao) : ViewModel() {
 
-    private val _comments = MutableLiveData<MutableList<Comment>>(mutableListOf())
-    val comments: LiveData<MutableList<Comment>> = _comments
-
-    private var commentId = 0
-
-    fun addComment(text: String) {
-        val newComment = Comment(commentId++, text)
-        _comments.value?.add(newComment)
-        _comments.value = _comments.value // Trigger LiveData update
+    // SlideshowViewModel.kt
+    fun getCommentsByDate(date: String): LiveData<List<Comment>> {
+        println("Querying comments for date: $date") // Debug log
+        return commentDao.getCommentsByDate(date).also {
+            println("LiveData for comments fetched.") // Debug log
+        }
     }
 
-    fun deleteComment(id: Int) {
-        _comments.value = _comments.value?.filter { it.id != id }?.toMutableList()
+    fun addComment(text: String, date: String) {
+        viewModelScope.launch {
+            println("Inserting comment: text=$text, date=$date") // Debug log
+            commentDao.insertComment(Comment(text = text, date = date))
+            println("Comment inserted successfully.") // Debug log
+        }
+    }
+
+    fun deleteComment(comment: Comment) {
+        viewModelScope.launch {
+            commentDao.deleteComment(comment)
+        }
     }
 }

@@ -6,28 +6,26 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.myerp.ui.slideshow.Comment
 
-@Database(entities = [User::class, FieldData::class, LogEntry::class], version = 3)
+@Database(entities = [User::class, FieldData::class, LogEntry::class, Comment::class], version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun fieldDao(): FieldDao
     abstract fun logEntryDao(): LogEntryDao
+    abstract fun commentDao(): CommentDao
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        private val MIGRATION_2_3 = object : Migration(2, 3) {
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
-                    "CREATE TABLE IF NOT EXISTS `log_entries` (" +
+                    "CREATE TABLE IF NOT EXISTS `comments` (" +
                             "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
-                            "`fieldName` TEXT NOT NULL, " +
-                            "`amount` REAL NOT NULL, " +
-                            "`oldBalance` REAL NOT NULL, " +
-                            "`newBalance` REAL NOT NULL, " +
-                            "`comment` TEXT, " +
-                            "`timestamp` INTEGER NOT NULL)"
+                            "`text` TEXT NOT NULL, " +
+                            "`date` TEXT NOT NULL)"
                 )
             }
         }
@@ -38,7 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "myerp_database"
-                ).addMigrations(MIGRATION_2_3).build()
+                ).addMigrations(MIGRATION_3_4).build()
                 INSTANCE = instance
                 instance
             }

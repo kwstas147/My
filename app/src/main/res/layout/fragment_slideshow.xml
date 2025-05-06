@@ -16,9 +16,10 @@
 
     <DatePicker
         android:id="@+id/date_picker"
-        android:layout_width="348dp"
+        android:layout_width="match_parent"
         android:layout_height="411dp"
-        android:layout_marginStart="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/current_date" />
 
@@ -28,8 +29,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:autofillHints=""
-        android:hint="Write a comment"
+        android:hint="@string/write_a_comment"
+        android:inputType="text"
         android:minHeight="48dp"
+        android:textColorHint="#757575"
         app:layout_constraintEnd_toStartOf="@id/add_comment_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_picker" />
@@ -47,8 +50,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="16dp"
+        android:padding="8dp"
+        android:visibility="visible"
+        android:contentDescription="@string/list_of_comments"
+        android:importantForAccessibility="yes"
         app:layout_constraintTop_toBottomOf="@id/comment_input"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

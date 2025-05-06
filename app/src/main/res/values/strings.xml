@@ -47,4 +47,6 @@
     <string name="biometric_prompt_subtitle">Authenticate using your biometrics</string>
     <string name="biometric_prompt_cancel">Cancel</string>
     <string name="error_biometric_auth_failed">Biometric authentication failed</string>
+    <string name="list_of_comments">List of comments</string>
+    <string name="write_a_comment">Write a comment</string>
 </resources>
