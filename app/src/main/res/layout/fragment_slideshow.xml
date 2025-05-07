@@ -16,10 +16,14 @@
 
     <DatePicker
         android:id="@+id/date_picker"
-        android:layout_width="match_parent"
-        android:layout_height="411dp"
+        android:layout_width="420dp"
+        android:layout_height="420dp"
+        android:layout_marginTop="15dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="2dp"
+        android:scaleX="1.29"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/current_date" />
 
@@ -32,7 +36,7 @@
         android:hint="@string/write_a_comment"
         android:inputType="text"
         android:minHeight="48dp"
-        android:textColorHint="#757575"
+        android:textColorHint="#78909C"
         app:layout_constraintEnd_toStartOf="@id/add_comment_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/date_picker" />
@@ -41,7 +45,7 @@
         android:id="@+id/add_comment_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add"
+        android:text="@string/add1"
         app:layout_constraintTop_toTopOf="@id/comment_input"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -51,13 +55,12 @@
         android:layout_height="0dp"
         android:layout_margin="16dp"
         android:padding="8dp"
-        android:visibility="visible"
-        android:contentDescription="@string/list_of_comments"
-        android:importantForAccessibility="yes"
-        app:layout_constraintTop_toBottomOf="@id/comment_input"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
+        android:visibility="gone"
+    android:contentDescription="@string/list_of_comments"
+    android:importantForAccessibility="yes"
+    app:layout_constraintTop_toBottomOf="@id/comment_input"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,8 +16,7 @@ class SlideshowFragment : Fragment() {
 
     private var _binding: FragmentSlideshowBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // Αυτή η ιδιότητα είναι έγκυρη μόνο μεταξύ των μεθόδων onCreateView και onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -25,71 +24,83 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Δημιουργία του AppDatabase και του CommentDao
+        val database = (requireActivity().application as MyApp).database
+        val commentDao = database.commentDao()
+
+        // Δημιουργία του ViewModel με χρήση του Factory
         val slideshowViewModel = ViewModelProvider(
             this,
-            SlideshowViewModelFactory((requireActivity().application as MyApp).database.commentDao())
+            SlideshowViewModelFactory(commentDao)
         ).get(SlideshowViewModel::class.java)
 
         _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        // Αναφορές στα στοιχεία του layout
         val currentDateTextView = binding.currentDate
         val datePicker = binding.datePicker
         val commentInput = binding.commentInput
         val addCommentButton = binding.addCommentButton
         val recyclerView = binding.commentsRecyclerView
 
-        val adapter = CommentAdapter(mutableListOf()) { id ->
-            println("Deleting comment with ID: $id") // Debug log
-            slideshowViewModel.deleteComment(id)
+        // Ρύθμιση του RecyclerView με τον adapter
+        val adapter = CommentAdapter(mutableListOf()) { comment ->
+            println("Διαγραφή σχολίου με ID: ${comment.id}") // Debug log
+            slideshowViewModel.deleteComment(comment) // Περνάμε το αντικείμενο Comment
         }
         recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true) // Ensure RecyclerView optimizations
+        recyclerView.setHasFixedSize(true) // Βελτιστοποίηση του RecyclerView
 
+        // Ρύθμιση της τρέχουσας ημερομηνίας
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         currentDateTextView.text = dateFormat.format(calendar.time)
 
-        // Ενημέρωση σχολίων με βάση την επιλεγμένη ημερομηνία
+        // Συνάρτηση για ενημέρωση σχολίων με βάση την επιλεγμένη ημερομηνία
         fun updateCommentsForDate(selectedDate: String) {
-            println("Fetching comments for date: $selectedDate") // Debug log
+            println("Ανάκτηση σχολίων για την ημερομηνία: $selectedDate") // Debug log
             slideshowViewModel.getCommentsByDate(selectedDate).observe(viewLifecycleOwner) { comments ->
-                println("Comments fetched for date $selectedDate: $comments") // Debug log
-                adapter.updateComments(comments)
-                if (comments.isEmpty()) {
-                    println("No comments found for date: $selectedDate") // Debug log
+                println("Σχόλια που ανακτήθηκαν για την ημερομηνία $selectedDate: $comments") // Debug log
+                adapter.updateComments(comments) // Ενημέρωση του adapter με τα νέα σχόλια
+                recyclerView.visibility = if (comments.isEmpty()) {
+                    println("Δεν υπάρχουν σχόλια για εμφάνιση.") // Debug log
+                    View.GONE
                 } else {
-                    println("Comments successfully updated in RecyclerView.") // Debug log
+                    println("Εμφάνιση RecyclerView με σχόλια.") // Debug log
+                    View.VISIBLE
                 }
             }
         }
 
         // Αρχική ενημέρωση σχολίων
         val initialDate = dateFormat.format(calendar.time)
-        println("Initial date for comments: $initialDate") // Debug log
+        println("Αρχική ημερομηνία για σχόλια: $initialDate") // Debug log
         updateCommentsForDate(initialDate)
 
         // Listener για αλλαγή ημερομηνίας
         datePicker.setOnDateChangedListener { _, year, month, dayOfMonth ->
-            val selectedDate = String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth) // Εξασφαλίζουμε σωστή μορφή ημερομηνίας
-            println("Date changed to: $selectedDate") // Debug log
+            val selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth) // Εξασφαλίζουμε σωστή μορφή ημερομηνίας
+            println("Η ημερομηνία άλλαξε σε: $selectedDate") // Debug log
             currentDateTextView.text = selectedDate
             updateCommentsForDate(selectedDate)
         }
 
+        // Listener για προσθήκη σχολίου
         addCommentButton.setOnClickListener {
             val commentText = commentInput.text.toString()
             if (commentText.isNotBlank()) {
-                println("Adding comment: $commentText for date: ${currentDateTextView.text}") // Debug log
+                println("Προσθήκη σχολίου: $commentText για την ημερομηνία: ${currentDateTextView.text}") // Debug log
                 slideshowViewModel.addComment(commentText, currentDateTextView.text.toString())
                 commentInput.text.clear()
             } else {
-                println("Comment input is blank, not adding comment.") // Debug log
+                println("Το πεδίο σχολίου είναι κενό, δεν προστέθηκε σχόλιο.") // Debug log
             }
         }
 
         return root
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

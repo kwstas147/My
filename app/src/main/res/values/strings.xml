@@ -49,4 +49,6 @@
     <string name="error_biometric_auth_failed">Biometric authentication failed</string>
     <string name="list_of_comments">List of comments</string>
     <string name="write_a_comment">Write a comment</string>
+    <string name="add1">Add</string>
+    <string name="delete">Delete</string>
 </resources>

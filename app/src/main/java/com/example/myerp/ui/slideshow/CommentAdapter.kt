@@ -29,7 +29,7 @@ class CommentAdapter(
         holder.commentText.text = comment.text
         holder.deleteButton.setOnClickListener {
             println("Delete button clicked for comment ID: ${comment.id}") // Debug log
-            onDelete(comment)
+            onDelete(comment) // Περνάμε το αντικείμενο Comment
         }
     }
 
