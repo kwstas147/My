@@ -10,13 +10,16 @@
         android:id="@+id/fieldNameInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter field name" />
+        android:autofillHints=""
+        android:hint="@string/enter_field_name"
+        android:inputType="text"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/addFieldButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Field" />
+        android:text="@string/add_field" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

@@ -51,4 +51,6 @@
     <string name="write_a_comment">Write a comment</string>
     <string name="add1">Add</string>
     <string name="delete">Delete</string>
+    <string name="add_field">Add Field</string>
+    <string name="enter_field_name">Enter field name</string>
 </resources>

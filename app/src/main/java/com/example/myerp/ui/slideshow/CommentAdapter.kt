@@ -5,14 +5,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myerp.R
-import androidx.recyclerview.widget.DiffUtil
 
 class CommentAdapter(
     private var comments: MutableList<Comment>,
     private val onDelete: (Comment) -> Unit
 ) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+
     
     fun updateComments(newComments: List<Comment>) {
         println("Updating comments in adapter: $newComments") // Debug log
