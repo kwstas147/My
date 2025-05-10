@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myerp.MyApp
 import com.example.myerp.databinding.FragmentSlideshowBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -79,8 +80,27 @@ class SlideshowFragment : Fragment() {
 
         // Ρύθμιση του RecyclerView με LinearLayoutManager
         adapter = CommentAdapter(mutableListOf(), { comment ->
+            // Καλώντας τη deleteComment από το ViewModel αποθηκεύουμε προσωρινά το σχόλιο
             slideshowViewModel.deleteComment(comment)
-            updateCommentsForDate(currentDateTextView.text.toString())
+
+            // Εμφάνιση του Snackbar με επιλογή αναίρεσης
+            Snackbar.make(
+                requireView(), // Το View στο οποίο θα "κολλήσει" το Snackbar
+                "Σχόλιο διεγράφη", // Το μήνυμα που θα εμφανιστεί
+                Snackbar.LENGTH_LONG // Πόση ώρα θα εμφανίζεται το Snackbar
+            ).apply {
+                setAction("Αναίρεση") {
+                    // Όταν ο χρήστης πατήσει "Αναίρεση"
+                    slideshowViewModel.undoDeleteComment()
+                    // Η λίστα θα ενημερωθεί αυτόματα μέσω του Flow
+                }
+                show() // Εμφάνιση του Snackbar
+            }
+
+            // Δεν χρειάζεται να καλέσετε updateCommentsForDate(currentDateTextView.text.toString()) εδώ
+            // γιατί το Flow θα εκπέμψει τη νέα λίστα μετά τη διαγραφή (ή την αναίρεση)
+            // και ο adapter θα ενημερωθεί αυτόματα από το collect block παραπάνω.
+
         }, { comment ->
             shareComment(comment.text)
         })
@@ -105,7 +125,7 @@ class SlideshowFragment : Fragment() {
             if (commentText.isNotBlank()) {
                 slideshowViewModel.addComment(commentText, currentDateTextView.text.toString())
                 commentInput.text.clear()
-                updateCommentsForDate(currentDateTextView.text.toString())
+                // Η λίστα θα ενημερωθεί αυτόματα μέσω του Flow μετά την προσθήκη
             }
         }
 
