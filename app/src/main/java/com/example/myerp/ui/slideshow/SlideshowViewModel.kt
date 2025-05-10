@@ -1,6 +1,5 @@
 package com.example.myerp.ui.slideshow
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myerp.data.CommentDao
@@ -9,13 +8,6 @@ import kotlinx.coroutines.launch
 
 class SlideshowViewModel(private val commentDao: CommentDao) : ViewModel() {
 
-
-    fun getCommentsByDate(date: String): LiveData<List<Comment>> {
-        println("Querying comments for date: $date") // Debug log
-        val comments = commentDao.getCommentsByDate(date)
-        comments.observeForever { println("Comments fetched from database: $it") } // Debug log
-        return comments
-    }
 
     fun getCommentsByDateFlow(date: String): Flow<List<Comment>> {
         println("Querying comments for date (Flow): $date") // Debug log
