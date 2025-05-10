@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class SlideshowViewModel(private val commentDao: CommentDao) : ViewModel() {
 
-    // SlideshowViewModel.kt
+
     fun getCommentsByDate(date: String): LiveData<List<Comment>> {
         println("Querying comments for date: $date") // Debug log
         val comments = commentDao.getCommentsByDate(date)
@@ -20,6 +20,14 @@ class SlideshowViewModel(private val commentDao: CommentDao) : ViewModel() {
     fun getCommentsByDateFlow(date: String): Flow<List<Comment>> {
         println("Querying comments for date (Flow): $date") // Debug log
         return commentDao.getCommentsByDateFlow(date)
+    }
+
+    fun saveFieldDataToCalendar(fieldName: String, amount: Double, oldBalance: Double, newBalance: Double, date: String) {
+        viewModelScope.launch {
+            val commentText = "Field: $fieldName, Amount: $amount, Old Balance: $oldBalance, New Balance: $newBalance"
+            println("Saving field data to calendar: $commentText on date: $date") // Debug log
+            commentDao.insertComment(Comment(text = commentText, date = date))
+        }
     }
 
     fun addComment(text: String, date: String) {

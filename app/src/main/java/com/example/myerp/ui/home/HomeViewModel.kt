@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.myerp.data.AppDatabase
 import com.example.myerp.data.FieldData
 import com.example.myerp.data.LogEntry
+import com.example.myerp.ui.slideshow.SlideshowViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,10 +29,20 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun adjustFieldValue(field: FieldData, value: Double) {
+    fun adjustFieldValue(field: FieldData, value: Double, slideshowViewModel: SlideshowViewModel) {
         viewModelScope.launch {
             val updatedField = field.copy(total = field.total + value)
-            fieldDao.insertField(updatedField) // Ενημέρωση του πεδίου
+            fieldDao.insertField(updatedField)
+
+            // Αποθήκευση στο ημερολόγιο
+            val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(System.currentTimeMillis())
+            slideshowViewModel.saveFieldDataToCalendar(
+                fieldName = field.name,
+                amount = value,
+                oldBalance = field.total,
+                newBalance = updatedField.total,
+                date = currentDate
+            )
 
             // Δημιουργία και αποθήκευση LogEntry
             val logEntry = LogEntry(
@@ -37,10 +50,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 amount = value,
                 oldBalance = field.total,
                 newBalance = updatedField.total,
-                comment = "Adjustment made",
                 timestamp = System.currentTimeMillis()
             )
-            println("Saving log entry: $logEntry") // Debugging line
             AppDatabase.getDatabase(getApplication()).logEntryDao().insertLogEntry(logEntry)
         }
     }
