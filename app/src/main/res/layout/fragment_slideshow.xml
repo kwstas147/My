@@ -17,10 +17,10 @@
     <DatePicker
         android:id="@+id/date_picker"
         android:layout_width="match_parent"
-        android:layout_height="420dp"
+        android:layout_height="400dp"
         android:layout_marginTop="2dp"
         android:paddingStart="45dp"
-        android:paddingEnd="42dp"
+        android:paddingEnd="45dp"
         android:scaleX="1.30"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.444"
