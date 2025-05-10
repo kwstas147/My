@@ -1,20 +1,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/comment_text"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="#000000"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textColor="#000000" />
 
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/delete" />
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <Button
+            android:id="@+id/delete_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/share_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share" />
+    </LinearLayout>
 </LinearLayout>

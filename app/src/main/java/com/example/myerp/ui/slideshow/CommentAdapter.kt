@@ -11,7 +11,8 @@ import com.example.myerp.R
 
 class CommentAdapter(
     private var comments: MutableList<Comment>,
-    private val onDelete: (Comment) -> Unit
+    private val onDelete: (Comment) -> Unit,
+    private val onShare: (Comment) -> Unit // Νέα παράμετρος για κοινοποίηση
 ) : RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     
@@ -26,11 +27,12 @@ class CommentAdapter(
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = comments[position]
-        println("Binding comment at position $position: $comment") // Debug log
         holder.commentText.text = comment.text
         holder.deleteButton.setOnClickListener {
-            println("Delete button clicked for comment ID: ${comment.id}") // Debug log
-            onDelete(comment) // Περνάμε το αντικείμενο Comment
+            onDelete(comment)
+        }
+        holder.shareButton.setOnClickListener {
+            onShare(comment)
         }
     }
 
@@ -45,5 +47,6 @@ class CommentAdapter(
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val commentText: TextView = itemView.findViewById(R.id.comment_text)
         val deleteButton: Button = itemView.findViewById(R.id.delete_button)
+        val shareButton: Button = itemView.findViewById(R.id.share_button) // Νέο κουμπί για κοινοποίηση
     }
 }
